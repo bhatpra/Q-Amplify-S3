@@ -1,5 +1,6 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 # React + TypeScript + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
@@ -53,6 +54,8 @@ export default tseslint.config({
 =======
 =======
 >>>>>>> d1a6b7def97b25c568a56f92ec005effaec8a933
+=======
+>>>>>>> 4a203bb1d48961be28569a79f8d33da6d0c1db9b
 # from-build-to-embed
 
 
@@ -147,6 +150,9 @@ For open source projects, say how it is licensed.
 ## Project status
 If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> d871a59d9b9355394262059e2c65fb7fa9adaee9
 =======
 >>>>>>> d1a6b7def97b25c568a56f92ec005effaec8a933
+=======
+>>>>>>> 4a203bb1d48961be28569a79f8d33da6d0c1db9b
