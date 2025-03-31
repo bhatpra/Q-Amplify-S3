@@ -1,0 +1,37 @@
+.FileUploader {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    max-width: 100%;
+}
+
+.QiFrameContainer {
+    position: fixed;
+    bottom: 50px;
+    right: 75px;
+    width: 100vw;
+    height: 90vh;
+    max-width: 600px;
+    max-height: 600px;
+    border: 1px solid #ccc;
+    background-color: white;
+    border-radius: 8px;
+    z-index: 1000;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
+    box-sizing: border-box;
+    overflow: hidden;
+    padding: 10px;
+}
+
+.QiFrameContainer iframe {
+    width: 96.5%;
+    height: 96.5%;
+    border: none;
+    position: absolute;
+}
+
+.hidden {
+    display: none;
+    pointer-events: none;
+}
