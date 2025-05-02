@@ -1,13 +1,18 @@
 import React from 'react';
-import '../index.css';
+import rawOutputs from '../../amplify_outputs.json';
+
+const outputs = rawOutputs as unknown as {
+    custom: {
+        q_business_url: string;
+    };
+};
 
 const QFrame: React.FC = () => {
-    /* REPLACE WITH YOUR Q BUSINESS DEPLOYED URL */
-    const deployedUrl = "https://<YOUR_Q_BUSINESS_URL>.chat.qbusiness.us-east-1.on.aws/";
+    const qBusinessDeployedURL = outputs.custom.q_business_url;
 
     return (
         <iframe
-            src={deployedUrl}
+            src={qBusinessDeployedURL}
             title="Chatbot"
             className="QFrame"
         />

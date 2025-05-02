@@ -17,7 +17,7 @@ const backend = defineBackend({
 
 export const customResource = backend.createStack("CustomResourceStack");
 
-/* 1ST DEPLOYMENT */
+/* DEFINE AMAZON Q BUSINESS APP */
 
 export const qapp = new q.CfnApplication(customResource, "Qapp", {
   displayName: "Qapp",
@@ -29,8 +29,9 @@ export const qapp = new q.CfnApplication(customResource, "Qapp", {
   identityType: "AWS_IAM_IDC",
   roleArn: `arn:aws:iam::${customResource.account}:role/aws-service-role/qbusiness.amazonaws.com/AWSServiceRoleForQBusiness`,
   /* REPLACE WITH YOUR IAM IDENTITY CENTER ARN */
-  // identityCenterInstanceArn: "arn:aws:sso:::instance/<YOUR-IAM-IDC-ARN>",
+  identityCenterInstanceArn: "arn:aws:sso:::instance/ssoins-<YOUR-IAM-IDC-ARN>",
 });
+
 
 /* Q Business Service Access Role */
 const qApplicationServiceAccessRole = new iam.Role(customResource, 'QApplicationServiceAccessRole', {
@@ -99,64 +100,8 @@ qApplicationServiceAccessRole.assumeRolePolicy?.addStatements(
   })
 );
 
-/* Q Business Web Experience Role */
-const qWebExperienceFullRole = new iam.Role(customResource, 'QWebExperienceFullRole', {
-  roleName: 'QWebExperienceFullRole',
-  assumedBy: new iam.ServicePrincipal('application.qbusiness.amazonaws.com'),
-  description: 'IAM role for Amazon Q Business WebExperience Full Access'
-});
+/* DEFINE AMAZON Q BUSINESS INDEX */
 
-qWebExperienceFullRole.assumeRolePolicy?.addStatements(new iam.PolicyStatement({
-  sid: 'QBusinessTrustPolicy',
-  effect: iam.Effect.ALLOW,
-  actions: ['sts:AssumeRole', 'sts:SetContext'],
-  principals: [new iam.ServicePrincipal('application.qbusiness.amazonaws.com')],
-  conditions: {
-    StringEquals: {
-      'aws:SourceAccount': customResource.account
-    },
-    ArnEquals: {
-      'aws:SourceArn': `arn:aws:qbusiness:us-east-1:${customResource.account}:application/${qapp.attrApplicationId}`
-    }
-  }
-}));
-
-qWebExperienceFullRole.addToPolicy(new iam.PolicyStatement({
-  sid: 'QBusinessConversationPermission',
-  effect: iam.Effect.ALLOW,
-  actions: [
-    'qbusiness:Chat',
-    'qbusiness:ChatSync',
-    'qbusiness:ListMessages',
-    'qbusiness:ListConversations',
-    'qbusiness:DeleteConversation',
-    'qbusiness:PutFeedback',
-    'qbusiness:GetWebExperience',
-    'qbusiness:GetApplication',
-    'qbusiness:ListPlugins',
-    'qbusiness:ListPluginActions',
-    'qbusiness:GetChatControlsConfiguration',
-    'qbusiness:ListRetrievers',
-    'qbusiness:ListAttachments',
-    'qbusiness:GetMedia',
-    'qbusiness:DeleteAttachment'
-  ],
-  resources: [
-    `arn:aws:qbusiness:us-east-1:${customResource.account}:application/${qapp.attrApplicationId}`
-  ]
-}));
-
-qWebExperienceFullRole.addToPolicy(new iam.PolicyStatement({
-  sid: 'QBusinessPluginDiscoveryPermissions',
-  effect: iam.Effect.ALLOW,
-  actions: [
-    'qbusiness:ListPluginTypeMetadata',
-    'qbusiness:ListPluginTypeActions'
-  ],
-  resources: ['*']
-}));
-
-/* Q Business Index Creation */
 export const qIndex = new q.CfnIndex(customResource, "QIndex", {
   displayName: "QIndex",
   description: "CDK instantiated Amazon Q Business App index",
@@ -167,9 +112,7 @@ export const qIndex = new q.CfnIndex(customResource, "QIndex", {
   type: "STARTER",
 });
 
-/* 2ND DEPLOYMENT */
-
-/* Q Business Retriever Creation */
+/* DEFINE AMAZON Q BUSINESS RETRIEVER */
 
 export const qRetriever = new q.CfnRetriever(customResource, "QRetriever", {
   displayName: "QRetriever",
@@ -182,9 +125,7 @@ export const qRetriever = new q.CfnRetriever(customResource, "QRetriever", {
   }
 });
 
-/* 3RD DEPLOYMENT */
-
-/* Q Business Role for S3 Access and Trust Policy */
+/* S3 Access Role and Trust to Amazon Q Business */
 const qBusinessS3Role = new iam.Role(customResource, 'QBusinessS3Role', {
   roleName: 'QBusinessS3Role',
   assumedBy: new iam.ServicePrincipal('qbusiness.amazonaws.com'),
@@ -206,7 +147,6 @@ qBusinessS3Role.assumeRolePolicy?.addStatements(new iam.PolicyStatement({
   }
 }));
 
-/* S3 permissions */
 qBusinessS3Role.addToPolicy(new iam.PolicyStatement({
   sid: 'AllowsAmazonQToGetObjectfromS3',
   effect: iam.Effect.ALLOW,
@@ -231,7 +171,6 @@ qBusinessS3Role.addToPolicy(new iam.PolicyStatement({
   }
 }));
 
-/* Document ingestion permissions */
 qBusinessS3Role.addToPolicy(new iam.PolicyStatement({
   sid: 'AllowsAmazonQToIngestDocuments',
   effect: iam.Effect.ALLOW,
@@ -241,7 +180,6 @@ qBusinessS3Role.addToPolicy(new iam.PolicyStatement({
   ]
 }));
 
-/* Principal mapping APIs permissions */
 qBusinessS3Role.addToPolicy(new iam.PolicyStatement({
   sid: 'AllowsAmazonQToCallPrincipalMappingAPIs',
   effect: iam.Effect.ALLOW,
@@ -259,7 +197,8 @@ qBusinessS3Role.addToPolicy(new iam.PolicyStatement({
   ]
 }));
 
-/* Define Q Business Data Source */
+/* DEFINE AMAZON Q BUSINESS DATA SOURCE */
+
 export const qDataSource = new q.CfnDataSource(customResource, "QDataSource", {
   displayName: `${backend.storage.resources.bucket.bucketName}`,
   applicationId: qapp.attrApplicationId,
@@ -288,10 +227,10 @@ export const qDataSource = new q.CfnDataSource(customResource, "QDataSource", {
   roleArn: qBusinessS3Role.roleArn
 });
 
-/* 4TH DEPLOYMENT */
-
+/* KMS Key and Q Business Web Experience Permissions */
 const qBusinessKmsKey = new kms.Key(customResource, 'QBusinessKmsKey', {
   description: 'KMS key for QBusiness WebExperience',
+  alias: 'QBusinessKmsKey',
   enableKeyRotation: true,
 });
 
@@ -351,10 +290,12 @@ qWebExperienceRole.addToPolicy(new iam.PolicyStatement({
   }
 }));
 
+/* DEFINE AMAZON Q BUSINESS WEB EXPERIENCE */
+
 export const qWebExperience = new q.CfnWebExperience(customResource, "QWebExperience", {
   applicationId: qapp.attrApplicationId,
   origins: [
-    /* REPLACE WITH YOUR AMPLIFY DOMAIN URL */
+    /* REPLACE WITH YOUR AMPLIFY DOMAIN ENDPOINT */
     "https://main.<APP_URL>.amplifyapp.com",
   ],
   samplePromptsControlMode: "ENABLED",
@@ -362,4 +303,10 @@ export const qWebExperience = new q.CfnWebExperience(customResource, "QWebExperi
   title: "AnyCompany Q App",
   welcomeMessage: "Welcome to your Amazon Q Business Application!",
   roleArn: qWebExperienceRole.roleArn
+});
+
+backend.addOutput({
+  custom: {
+    q_business_url: qWebExperience.attrDefaultEndpoint,
+  },
 });

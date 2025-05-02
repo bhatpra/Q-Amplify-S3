@@ -41,7 +41,7 @@ function App() {
                 '.pdf', '.html', '.xml', '.xslt', '.md', '.csv', '.xls', '.xlsx',
                 '.json', '.rtf', '.ppt', '.pptx', '.doc', '.docx', '.txt'
               ]}
-              path="public/"
+              path={({ identityId }) => `protected/${identityId}/`}
               maxFileCount={10}
               isResumable
             />
