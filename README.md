@@ -1,17 +1,24 @@
-## My Project
+# Building a Gen AI-Powered Conversational Assistant with Amazon Q Business and AWS Amplify Gen 2
 
-TODO: Fill this README out!
+This repository demonstrates how to embed a Generative AI-powered conversational assistant into enterprise applications using AWS Amplify Gen 2, Amazon Q Business, and the AWS Cloud Development Kit (CDK). The solution enables natural language querying of internal documents, helping teams access knowledge faster and make informed decisions.
 
-Be sure to:
+![App Screenshot](https://github.com/aws-samples/sample-build-and-embed-genai-apps/blob/main/img/app1.gif)
 
-* Change the title in this README
-* Edit your repository description on GitHub
+## Getting Started
 
-## Security
+### Step 1: Clone the Repository
 
-See [CONTRIBUTING](CONTRIBUTING.md#security-issue-notifications) for more information.
+```bash
+git clone https://github.com/aws-samples/sample-build-and-embed-genai-apps.git
+cd sample-build-and-embed-genai-apps
+```
 
-## License
+### Step 3: Initiate a Cloud Sandbox Environment
+```bash
+npx ampx sandbox
+```
 
-This library is licensed under the MIT-0 License. See the LICENSE file.
-
+### Step 4: Run the App
+```bash
+npm run dev
+```
