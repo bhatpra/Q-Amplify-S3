@@ -8,6 +8,7 @@ This repository demonstrates how to embed a Generative AI-powered conversational
 
 ### Step 1: Clone the Repository
 
+
 ```bash
 git clone https://github.com/aws-samples/sample-build-and-embed-genai-apps.git
 cd sample-build-and-embed-genai-apps
